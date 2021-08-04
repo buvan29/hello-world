@@ -1,0 +1,20 @@
+node {
+ 
+ 
+ stage('gitcheckout') { // for display purposes
+ 
+ git 'https://github.com/abdulrahman0108/simplewebproject.git'
+ 
+ }
+ stage('mavenbuild') {
+ def mvnhome = tool name: 'maven', type: 'maven'
+ sh "${mvnhome}/bin/mvn clean package" 
+ }
+ stage('deploytomcat') {
+ sshagent(['tomcat-dep']) {
+ sh 'scp -o StrictHostKeyChecking=no target/*.war ec2-
+user@172.31.40.128:/home/ec2-user/apache-tomcat-9.0.50/webapps'
+ }
+ }
+ 
+}
